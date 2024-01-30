@@ -2,7 +2,8 @@
 const MutedWords = [ "mute", "muted", "silent", "silence", "nosound", "no sound", "empty", "blank" ];
 var fullReplace = false;
 
-var SelectedCharacter;
+var CharacterName;
+var CharacterID
 var CustomName;
 var BoxingDescription;
 var AnnCallHash;
@@ -27,8 +28,11 @@ Promise.all([ fetch('characterIDs.txt').then(x => x.text()) ]).then(([sampleResp
   });
 
 function changeChar() {
-    SelectedCharacter = charList.options[charList.selectedIndex].text;
-    console.log(SelectedCharacter);
+    var txt;
+    txt = charList.options[charList.selectedIndex].text;
+    CharacterName = txt.slice(0, txt.indexOf(" "));
+    CharacterID = txt.slice(txt.indexOf(" ")+1);
+    console.log(CharacterID + CharacterName);
 }
 
 
