@@ -1,6 +1,21 @@
 //console.log("test");
 const MutedWords = [ "mute", "muted", "silent", "silence", "nosound", "no sound", "empty", "blank" ];
 var fullReplace = false;
+document.getElementById("series_id").style.display = "none";
+document.getElementById("slots").style.display = "block";
+function openSingle(){
+    document.getElementById("series_id").style.display = "none";
+    document.getElementById("slots").style.display = "block";
+    document.getElementById("outside").style.width="500px";
+    fullReplace = false;
+}
+function openFull(){
+    document.getElementById("series_id").style.display = "block";
+    document.getElementById("slots").style.display = "none";
+    document.getElementById("outside").style.width="300px";
+    fullReplace = true;
+}
+
 
 var CharacterName;
 var CharacterID
@@ -8,14 +23,16 @@ var CustomName;
 var BoxingDescription;
 var AnnCallHash;
 var NewSeriesID;
-var ChosenSlots = [ "04", "05", "06", "07" ];
+var ChosenSlots = [""];
+var SlotCount = 1;
 
 var charList = document.getElementById("chars");
-Promise.all([ fetch('characterIDs.txt').then(x => x.text()) ]).then(([sampleResp]) => {
+var seriesList = document.getElementById("series");
+Promise.all([ fetch('characterIDs.txt').then(x => x.text()), fetch('seriesIDs.txt').then(x => x.text()) ]).then(([characterIDs, seriesIDs]) => {
     var entry = "";
-    for (var i=0; i < sampleResp.length; i++){
-        if (sampleResp[i] != "\n"){
-            entry += sampleResp[i];
+    for (var i=0; i < characterIDs.length; i++){
+        if (characterIDs[i] != "\n"){
+            entry += characterIDs[i];
         }
         else {
             var newOption = document.createElement("option");
@@ -25,8 +42,78 @@ Promise.all([ fetch('characterIDs.txt').then(x => x.text()) ]).then(([sampleResp
         }
 
     }
-  });
+    entry = "";
+    for (var i=0; i < seriesIDs.length; i++){
+        if (seriesIDs[i] != "\n"){
+            entry += seriesIDs[i];
+        }
+        else {
+            var newOption = document.createElement("option");
+            newOption.text = entry;
+            seriesList.appendChild(newOption);
+            entry = "";
+        }
 
+    }
+  });
+function addSlot(){
+    var newID = SlotCount;
+
+    var div = document.createElement("div");
+    div.setAttribute("id", "slot"+newID)
+
+    var p = document.createElement("p");
+    p.appendChild(document.createTextNode("C "))
+
+    var textarea = document.createElement("textarea");
+    textarea.setAttribute("name", "slottext"+newID);
+    textarea.setAttribute("id", "slottext"+newID);
+    textarea.setAttribute("cols", "5");
+    textarea.setAttribute("rows", "1");
+    textarea.setAttribute("onchange", "changeSlot(id)");
+    var placeholder = ""+newID;
+    if (newID < 10) {
+        placeholder = "0"+newID;
+    }
+    textarea.setAttribute("placeholder", placeholder);
+    p.appendChild(textarea);
+
+    div.appendChild(p);
+    //div.appendChild(document.createElement("br"));
+
+    document.getElementById("slots").appendChild(div);
+
+    ChosenSlots[newID] = textarea.value;
+    SlotCount++;
+}
+function rmvSlot(){
+    if (SlotCount > 1) {
+        var currentID = SlotCount-1;
+
+        var div = document.getElementById("slot"+currentID);
+        div.remove();
+
+        ChosenSlots.pop();
+        SlotCount--;
+    }
+}
+function changeSlot(id){
+    var ob = document.getElementById(id);
+    var invalidChars = /[^0-9]/gi
+    if(invalidChars.test(ob.value)) {
+            ob.value = ob.value.replace(invalidChars,"");
+        }
+    var idVal = Number(id.slice(8));
+    var idText = "";
+    var slotValue = Number(ob.value)
+    if (slotValue < 10) { idText += 0 }
+    idText += slotValue;
+    if (ob.value != "" && ob.value != null) {
+        ChosenSlots[idVal] = idText;
+        console.log(ChosenSlots);
+    }
+}
+// Text inputs changed events
 function changeChar() {
     var txt;
     txt = charList.options[charList.selectedIndex].text;
@@ -34,19 +121,60 @@ function changeChar() {
     CharacterID = txt.slice(txt.indexOf(" ")+1);
     console.log(CharacterID + CharacterName);
 }
+function changeName() {
+    CustomName = document.getElementById("fname").value;
+    console.log(CustomName);
+}
+function changeBoxing() {
+    BoxingDescription = document.getElementById("boxingring").value;
+    console.log(BoxingDescription);
+}
+function changeSeries() {
+    NewSeriesID = document.getElementById("series").value;
+    console.log(NewSeriesID);
+}
+function changeHash() {
+    AnnCallHash = document.getElementById("announcerHash").value;
+    console.log(AnnCallHash);
+}
 
 
 
 function GenerateBtn() {
-    let res = prompt("Output Filename:");
+    //let res = prompt("Output Filename:");
+    var empty = false;
 
-    xmsbtFile = CreateMSBT(["07"], "sonic", "Shadow", "The Ultimate\nLife Form");
-    prcxmlFile = CreatePRCXML(["07"], 44);
+    // Check if missing requirements
+    if (CharacterName == "" || CharacterName == null ||
+        CharacterID == "" || CharacterID == null ||
+        ((ChosenSlots.length <= 0 || ChosenSlots == null) && !fullReplace)){
+        empty = true;
+    }
+    for (var i=0; i<ChosenSlots.length; i++){
+        if ((ChosenSlots[i] == "" || ChosenSlots[i] == null) && !fullReplace) {
+            empty = true;
+        }
+    }
+    // Create XML files if requirements are met
+    if (!empty){
+        var slotArr = ["00"];
+        if (!fullReplace) {slotArr = [...new Set(ChosenSlots)];} // Remove duplicates
 
-    document.getElementById("allPage").innerHTML += res + "\n";
-    document.getElementById("allPage").innerHTML += xmsbtFile + prcxmlFile;
-    console.log(xmsbtFile);
-    console.log(prcxmlFile);
+        var annCall = AnnCallHash;
+        if (annCall == "" || annCall == null) {
+            annCall = "0x1cc34a6c85"; // (FIX/REWORK: make this grab the associated character's announcer call hash)
+        }
+        xmsbtFile = CreateMSBT(slotArr, CharacterName, CustomName, BoxingDescription);
+        prcxmlFile = CreatePRCXML(slotArr, CharacterID, NewSeriesID, annCall);
+
+        //document.getElementById("allPage").innerHTML += res + "\n";
+        //document.getElementById("allPage").innerHTML += xmsbtFile + prcxmlFile;
+        console.log(xmsbtFile);
+        console.log(prcxmlFile);
+    } 
+    else {
+        alert("ERROR: One or more required entries are empty.");
+    }
 }
 
 
@@ -76,7 +204,7 @@ function CreateMSBT(Slots, CharName, NewName, BoxingRingText) {
         
         // stage_name
         if (BoxingRingText != "" && BoxingRingText != null) {
-            xmsbt.appendChild(createEntry(`nam_stage_name_${Slot}_sonic`, BoxingRingText));
+            xmsbt.appendChild(createEntry(`nam_stage_name_${Slot}_${CharName}`, BoxingRingText));
         }
     }
 
@@ -88,7 +216,7 @@ function CreateMSBT(Slots, CharName, NewName, BoxingRingText) {
    //console.log(finalXMSBT);
    return finalXMSBT;
 }
-function CreatePRCXML(Slots, CharID, Series = "", AnnouncerHash = "0x1cc34a6c85") {
+function CreatePRCXML(Slots, CharID, Series = "", AnnouncerHash = "") {
    // Create XML file
    var parser = new DOMParser();
    var xmlDoc = parser.parseFromString("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<struct></struct>", "text/xml");
@@ -112,17 +240,24 @@ function CreatePRCXML(Slots, CharID, Series = "", AnnouncerHash = "0x1cc34a6c85"
             entry.setAttribute("index", i.toString());
 
             for (var sl=0; sl<Slots.length; sl++) {
+                var slot = Slots[sl];
+                var slotid = Number(slot).toString();
                 if (!fullReplace) {
                     // nXX_index
-                    slot = Slots[sl];
-                    slotid = Number(slot).toString();
+                    
                     nslot = xmlDoc.createElement("byte")
                     nslot.setAttribute("hash", `n${slot}_index`)
                     nslot.appendChild(xmlDoc.createTextNode(slotid));
                     entry.appendChild(nslot);
                 }
-
-                if (AnnouncerHash != "" && AnnouncerHash != null){
+                // Mute announcer
+                var muteAnnouncer = false;
+                MutedWords.forEach(element => {
+                    if (AnnouncerHash.toLowerCase() == element){
+                        muteAnnouncer = true;
+                    }
+                });
+                if (!muteAnnouncer){
                     // characall_label
                     hash = xmlDoc.createElement("hash40")
                     hash.setAttribute("hash", `characall_label_c${slot}`);
@@ -138,7 +273,7 @@ function CreatePRCXML(Slots, CharID, Series = "", AnnouncerHash = "0x1cc34a6c85"
             }
 
             // ui_series_id
-            if (Series != "" && Series != null && fullReplace) {
+            if ((Series != "" && Series != null) && fullReplace) {
                 hash = xmlDoc.createElement("hash40")
                 hash.setAttribute("hash", "ui_series_id");
                 hash.appendChild(xmlDoc.createTextNode(Series))

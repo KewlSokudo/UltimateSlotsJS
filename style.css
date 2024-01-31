@@ -1,5 +1,25 @@
-#allPage {
+#outside {
+    margin: 0 auto;
+    width: 500px;
+    height: 780px;
+    padding: 10px;
+    border: 1px solid black;
+    overflow: hidden; /* will contain if #first is longer than #second */
+    float: center;
+}
+#main {
     
     text-align: center;
-    
+    width: 300px;
+    float:left; /* add this */
+}
+textarea {
+    resize: none;
+}
+#slots {
+    width: 196px;
+    float: right; /* add this */
+}
+#slot{
+    padding-bottom: 10px;
 }

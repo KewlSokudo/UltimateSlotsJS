@@ -11,49 +11,82 @@
         <script src="script.js" defer></script>
     </head>
     <body>
-        <div id="allPage">
-            <header>
-                <h1>UltimateSlotsJS</h1>
-                <h3>Created by KewlSokudo</h3>
-            </header>
+        <div id="outside">
+            <div id="main">
+                <header>
+                    <h1>UltimateSlotsJS</h1>
+                    <h3>Created by KewlSokudo</h3>
+                    <h5>v1.00</h5>
+                    <div class="tab">
+                        <button class="tablinks" onclick="openSingle()">Single Costume Slot(s)</button>
+                        <br><br>
+                        <button class="tablinks" onclick="openFull()">Full Character Replacement</button>
+                      </div>
+                    <br>
+                </header>
 
-            <label for="chars">Character ID <span style="color:red">*</span></label>
-            <br>
-            <select name="chars" id="chars" onchange="changeChar()">
-            <!-- 
-              <option value="volvo">Volvo</option>
-              <option value="saab">Saab</option>
-              <option value="mercedes">Mercedes</option>
-              <option value="audi">Audi</option>
-            -->
-            </select>
-            <br>
+                <label for="chars">Character ID <span style="color:red">*</span></label>
+                <br>
+                <select name="chars" id="chars" onchange="changeChar()">
+                <!-- 
+                <option value="volvo">Volvo</option>
+                <option value="saab">Saab</option>
+                <option value="mercedes">Mercedes</option>
+                <option value="audi">Audi</option>
+                -->
+                </select>
+                <br>
 
-            <p><br></p>
-            
-            <label for="cars">New Name <span style="color:red">*</span></label>
-            <br>
-            <input type="text" id="fname" name="fname">
-            <br>
+                <p><br></p>
+                
+                <label for="cars">New Name <span style="color:red">*</span></label>
+                <br>
+                <input type="text" id="fname" name="fname" onchange="changeName()">
+                <br>
 
-            <p><br></p>
+                <p><br></p>
 
-            <label for="boxingring">Boxing Ring Title/Description</label>
-            <br>
-            <textarea name="Text1" id="boxingring" cols="14" rows="4"></textarea>
-            <br>
+                <label for="boxingring">Boxing Ring Title/Description</label>
+                <br>
+                <textarea name="Text1" id="boxingring" cols="14" rows="4" onchange="changeBoxing()"></textarea>
+                <br>
 
-            <p><br></p>
+                <br>
 
-            <button id="addAnnouncer" onclick="addAnnouncer()">Add Announcer Call</button>
-            <p></p>
-            <label for="announcerHash">Custom Announcer Call Hash</label>
-            <br>
-            <input type="text" id="announcerHash" name="announcerHash">
-            <br>
+                <div id="series_id">
+                <label for="series">Series ID</label>
+                <br>
+                <select name="series" id="series" onchange="changeSeries()">
+                <!-- 
+                <option value="volvo">Volvo</option>
+                <option value="saab">Saab</option>
+                <option value="mercedes">Mercedes</option>
+                <option value="audi">Audi</option>
+                -->
+                </select>
+                </div>
+                <br><br><br>
 
-            <p><br><br></p>
-            <button id="generatebtn" onclick="GenerateBtn()">Generate UI Files</button>
-        </div> 
+                <p></p>
+
+                <button id="addAnnouncer" onclick="addAnnouncer()">Add Announcer Call</button>
+                <p></p>
+                <label for="announcerHash">Custom Announcer Call Hash</label>
+                <br>
+                <input type="text" id="announcerHash" name="announcerHash" onchange="changeHash()">
+                <br>
+
+                <p><br></p>
+                <button id="generatebtn" onclick="GenerateBtn()">Generate UI Files</button>
+                <br><br><br>
+            </div>
+            <div id="slots">
+                <label for="slots">Costume Slots(s) <span style="color:red">* </span><button onclick="addSlot()">+</button> <button onclick="rmvSlot()">-</button></label>
+                <br>
+                <div id="slot0">
+                <p>C <textarea name="slottext0" id="slottext0" cols="5" rows="1" onchange="changeSlot(id)" placeholder="00"></textarea></p>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
