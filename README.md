@@ -2,7 +2,7 @@
 UltimateSlotsJS is a web-based/JavaScript port of the original C# version of [UltSlots](https://gamebanana.com/tools/12465), a tool for automating **custom nameplates** and **adding announcer calls** for individual costume slots.
 
 Being written in JavaScript, UltimateSlotsJS can be used on any device that can access the web and browse files.
-Try it out here: [https://kewlsokudo.github.io/UltimateSlotsJS](url)
+Try it out here: [https://kewlsokudo.github.io/UltimateSlotsJS](https://kewlsokudo.github.io/UltimateSlotsJS)
 
 > **Note:** This tool is still a work-in-progress and may not work as expected. Support for both custom announcer calls and auto-zipping of the XML files is on the way.
 
