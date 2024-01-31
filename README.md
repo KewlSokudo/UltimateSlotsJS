@@ -6,3 +6,4 @@ Try it out here: [https://kewlsokudo.github.io/UltimateSlotsJS](url)
 
 
 ## Usage:
+Yet to be documented.

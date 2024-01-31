@@ -85,6 +85,9 @@ function addSlot(){
 
     ChosenSlots[newID] = textarea.value;
     SlotCount++;
+    if (SlotCount > 18) {
+        document.getElementById("outside").style.height = (780 + (43*(SlotCount-18))) + "px";
+    } else { document.getElementById("outside").style.height = 780 }
 }
 function rmvSlot(){
     if (SlotCount > 1) {
@@ -95,6 +98,9 @@ function rmvSlot(){
 
         ChosenSlots.pop();
         SlotCount--;
+        if (SlotCount > 18) {
+            document.getElementById("outside").style.height = (780 + (43*(SlotCount-18))) + "px";
+        } else { document.getElementById("outside").style.height = 780 }
     }
 }
 function changeSlot(id){
