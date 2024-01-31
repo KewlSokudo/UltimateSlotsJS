@@ -177,13 +177,66 @@ function GenerateBtn() {
         //document.getElementById("allPage").innerHTML += xmsbtFile + prcxmlFile;
         console.log(xmsbtFile);
         console.log(prcxmlFile);
+        
+        //
+
+
+        // Start download 1, await completion, then start download 2
+        Promise.resolve().then(()=> {
+            return new Promise(resolve => {
+              setTimeout(() => {
+                console.log("Downloading msg_name.xmsbt...");
+                DownloadXML("msg_name.xmsbt", xmsbtFile);
+                resolve();
+              }, 1000);
+            });
+          }).then(() => {
+            if (!(fullReplace && AnnCallHash == "" && NewSeriesID == "")) {
+                console.log("Downloading ui_chara_db.prcxml...");
+                DownloadXML("ui_chara_db.prcxml", prcxmlFile);
+            }
+          });
+        
+        
+        
+
+        //
     } 
     else {
         alert("ERROR: One or more required entries are empty.");
     }
 }
 
+function DownloadXML(filename, xmltext){
+    var pom = document.createElement('a');
 
+    var bb;
+    switch (filename){
+        case "ui_chara_db.prcxml":
+            bb = new Blob([xmltext.replaceAll("\t", "  ")], {type: 'text/plain'});
+            break;
+        case "msg_name.xmsbt":
+            {
+                var bytes = [0xff, 0xfe]; // UTF-16 header
+
+                for (var i = 0; i < xmltext.length; ++i) {
+                    var code = xmltext.charCodeAt(i);
+                    bytes = bytes.concat([code & 0xff, code / 256 >>> 0]);
+                }
+                bb = new Blob([new Uint8Array(bytes)], {type: 'text/csv;charset=UTF-16LE'});
+                break;
+            }
+    }
+
+    pom.setAttribute('href', window.URL.createObjectURL(bb));
+    pom.setAttribute('download', filename);
+
+    pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
+    pom.draggable = true; 
+    pom.classList.add('dragout');
+
+    pom.click();
+}
 
 function CreateMSBT(Slots, CharName, NewName, BoxingRingText) {
     var Slot;
@@ -210,7 +263,7 @@ function CreateMSBT(Slots, CharName, NewName, BoxingRingText) {
         
         // stage_name
         if (BoxingRingText != "" && BoxingRingText != null) {
-            xmsbt.appendChild(createEntry(`nam_stage_name_${Slot}_${CharName}`, BoxingRingText));
+            xmsbt.appendChild(createEntry(`nam_stage_name_${Slot}_${CharName}`, BoxingRingText.replace("\n", "\r\n")));
         }
     }
 
