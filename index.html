@@ -3,8 +3,8 @@
     <head>
         <title>UltimateSlotsJS 1.00</title>
         <meta charset="utf-8">
+        <link rel="icon" type="image/png" href="UltimateSlotsJS.png" />
         <link rel="stylesheet" href="style.css">
-        <!--<script src="XMLWriter.js" defer></script>-->
 
         <script type="text/javascript" src="jszip.js"></script>
         <script type="text/javascript" src="FileSaver.js"></script>
@@ -24,17 +24,15 @@
                       </div>
                     <br>
                 </header>
-
+                <datalist id="datalistTest">
+                    <option value="Pen">Pen</option>
+                    <option value="Pencil">Pencil</option>
+                    <option value="Paper">Paper</option>
+                </datalist>
                 <label for="chars">Character ID <span style="color:red">*</span></label>
                 <br>
-                <select name="chars" id="chars" onchange="changeChar()">
-                <!-- 
-                <option value="volvo">Volvo</option>
-                <option value="saab">Saab</option>
-                <option value="mercedes">Mercedes</option>
-                <option value="audi">Audi</option>
-                -->
-                </select>
+                    <select name="chars" id="chars" onchange="changeChar(this)">
+                    </select>
                 <br>
 
                 <p><br></p>
@@ -57,12 +55,6 @@
                 <label for="series">Series ID</label>
                 <br>
                 <select name="series" id="series" onchange="changeSeries()">
-                <!-- 
-                <option value="volvo">Volvo</option>
-                <option value="saab">Saab</option>
-                <option value="mercedes">Mercedes</option>
-                <option value="audi">Audi</option>
-                -->
                 </select>
                 </div>
                 <br><br><br>

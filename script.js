@@ -1,4 +1,11 @@
 //console.log("test");
+var Nus3Audio; // *
+var Nus3Bank; // *
+var SoundLabelInfo; // *
+var NewAudioFile; // *
+var NewSoundID;
+var NewSoundLabel; // *
+
 const MutedWords = [ "mute", "muted", "silent", "silence", "nosound", "no sound", "empty", "blank" ];
 var fullReplace = false;
 document.getElementById("series_id").style.display = "none";
@@ -14,6 +21,52 @@ function openFull(){
     document.getElementById("slots").style.display = "none";
     document.getElementById("outside").style.width="300px";
     fullReplace = true;
+}
+
+// Basic file input reading ...for Adding New Announcer Calls
+function addAnnouncer(){
+    var input = document.createElement('input');
+    input.type = 'file';
+    var input2 = document.createElement('input');
+    input2.type = 'file';
+    var input3 = document.createElement('input');
+    input3.type = 'file';
+    var input4 = document.createElement('input');
+    input4.type = 'file';
+
+    input.onchange = e => { 
+
+        // getting a hold of the file reference
+        var file = e.target.files[0]; 
+
+        // setting up the reader
+        var reader = new FileReader();
+        reader.readAsArrayBuffer(file);
+
+        // here we tell the reader what to do when it's done reading...
+        reader.onload = readerEvent => {
+            var content = readerEvent.target.result; // this is the content!
+            content = new Uint8Array(content);
+
+            console.log( content );
+            console.log (typeof content);
+
+            //console.log ( content[0] );
+
+            var content = new Blob([content], {type:"text/plain;charset=utf8"});
+            //console.log ( content );
+            //console.log ( typeof content );
+            //saveAs(content, "returned_"+file.name);
+        }
+        
+        input2.click();
+        input2.onchange = e => {
+            input3.click();
+        }
+
+    }
+
+    input.click();
 }
 
 
@@ -120,7 +173,8 @@ function changeSlot(id){
     }
 }
 // Text inputs changed events
-function changeChar() {
+function changeChar(self) {
+    self.nextElementSibling.value=self.value;
     var txt;
     txt = charList.options[charList.selectedIndex].text;
     CharacterName = txt.slice(0, txt.indexOf(" "));
