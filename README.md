@@ -4,9 +4,9 @@ UltimateSlotsJS is a web-based/JavaScript port of the original C# version of [Ul
 Being written in JavaScript, UltimateSlotsJS can be used on any device that can access the web and browse files.
 Try it out here: [https://kewlsokudo.github.io/UltimateSlotsJS](https://kewlsokudo.github.io/UltimateSlotsJS)
 
-> **Note:** This tool is still a work-in-progress and may not work as expected. Support for both custom announcer calls and auto-zipping of the XML files is on the way.
+> **Note:** This tool is still a work-in-progress and may not work as expected. Support for custom announcer calls is on the way.
 
-## Usage:
+## Usage
 1. Choose a mod-type
    - Single Costume Slot(s)
    - Full Character Replacement
@@ -14,9 +14,11 @@ Try it out here: [https://kewlsokudo.github.io/UltimateSlotsJS](https://kewlsoku
 3. Input info you'd like to change for the slot/character _(i.e. **New Name**, **Boxing Ring Description**, **Series ID**)_.
 
    3.5. If using `Single Costume Slot(s)`, use the `+` and `-` buttons to set the amount of slots you'd like to change, then input the **Slot ID** you want to affect. _(i.e. `c06`, `c07`)_
-4. Click `Generate UI Files` and save the `msg_name.xmsbt` + `ui_chara_db.prcml` files to their respective folders inside your mod.
+4. Click `Generate UI Files` and save the generated `Character Name [cXX - cXX].zip` mod file.
 
-   Ex:
-     `\ui\message\msg_name.xmsbt`
-     `\ui\param\database\ui_chara_db.prcxml`
 > **Ensure that you click _"Allow"_ if asked to save multiple files.**
+
+## Licenses
+JSZip - Copyright (c) 2009-2016 Stuart Knightley, David Duponchel, Franz Buchinger, António Afonso
+
+FileSaver.js - Copyright © 2016 Eli Grey.
