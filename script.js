@@ -180,24 +180,46 @@ function GenerateBtn() {
         
         //
 
-
-        // Start download 1, await completion, then start download 2
-        Promise.resolve().then(()=> {
-            return new Promise(resolve => {
-              setTimeout(() => {
-                console.log("Downloading msg_name.xmsbt...");
-                DownloadXML("msg_name.xmsbt", xmsbtFile);
-                resolve();
-              }, 1000);
-            });
-          }).then(() => {
-            if (!(fullReplace && AnnCallHash == "" && NewSeriesID == "")) {
-                console.log("Downloading ui_chara_db.prcxml...");
-                DownloadXML("ui_chara_db.prcxml", prcxmlFile);
+        // Make mod name depending on settings
+        var ModName = CustomName + " [";
+        if (fullReplace) {
+            ModName += "All Slots]";
+        } else {
+            if (ChosenSlots.length == 1) {
+                ModName += ChosenSlots[0]
+            } else {
+                var _least = Infinity;
+                var _max = 0;
+                ChosenSlots.forEach(element => {
+                    _least = Math.min(_least, Number(element));
+                    _max = Math.max(_max, Number(element));
+                });
+                ModName += `c${String(_least).padStart(2, '0')} - c${String(_max).padStart(2, '0')}]`;
             }
-          });
-        
-        
+        }
+
+        var zip = new JSZip();
+
+        // Zip ui_chara_db.prcxml
+        if (!(fullReplace && AnnCallHash == "" && NewSeriesID == "")) { // Only output if needed
+            var ui_chara_db = zip.folder(ModName + "/ui/param/database");
+            ui_chara_db.file("ui_chara_db.prcxml", prcxmlFile.replaceAll("\t", "  "));
+        }
+
+        // Zip msg_name.xmsbt
+        var msg_name = zip.folder(ModName + "/ui/message");
+        var xmsbtData = [0xff, 0xfe]; // UTF-16 header
+            for (var i = 0; i < xmsbtFile.length; ++i) {
+                var code = xmsbtFile.charCodeAt(i);
+                xmsbtData = xmsbtData.concat([code & 0xff, code / 256 >>> 0]);
+            }
+        msg_name.file("msg_name.xmsbt", xmsbtData, {base64: true});
+
+        // Save file
+        zip.generateAsync({type:"blob"})
+        .then(function(content) {
+            saveAs(content, ModName + ".zip");
+        });
         
 
         //
