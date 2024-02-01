@@ -186,7 +186,7 @@ function GenerateBtn() {
             ModName += "All Slots]";
         } else {
             if (ChosenSlots.length == 1) {
-                ModName += ChosenSlots[0]
+                ModName += `c${ChosenSlots[0]}]`;
             } else {
                 var _least = Infinity;
                 var _max = 0;
